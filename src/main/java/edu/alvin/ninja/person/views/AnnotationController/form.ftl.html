@@ -1,0 +1,82 @@
+<#if putMethod!false>
+<input type="hidden" name="_method" value="put">
+</#if>
+<div class="form-group">
+    <label class="control-label col-md-5">
+    ${i18n("person.name")}
+        <span class="asterisk">*</span>
+    </label>
+
+    <div class="col-md-2">
+        <input class="form-control"
+               type="text"
+               name="name"
+               data-fv-notempty="true"
+               value="${(form.name)!}">
+    <@l.error for="name"/>
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="control-label col-md-5">
+    ${i18n("person.gender")}
+        <span class="asterisk">*</span>
+    </label>
+
+    <div class="col-md-2">
+    <@c.genderSelect selectGender="${(form.gender)!'M'}" class="form-control" name="gender"/>
+        <@l.error for="gender"/>
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="control-label col-md-5">
+    ${i18n("person.birthday")}
+        <span class="asterisk">*</span>
+    </label>
+
+    <div class="col-md-2">
+        <div class="input-group">
+            <input type="text" class="form-control alv-datepicker">
+                <span class="input-group-addon">
+                    <i class="glyphicon glyphicon-calendar"></i>
+                </span>
+        </div>
+        <input type="text" value="${(form.birthday)!}"
+               name="birthday"
+               class="form-control not-visible-filed"
+               data-datetimepicker=".alv-datepicker"
+               data-fv-notempty="true"
+               data-fv-datetime="true"
+               data-fv-datetime-message="${i18n('invalidDate')}">
+    <@l.error for="birthday"/>
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="control-label col-md-5">
+    ${i18n("person.telephone")}
+    </label>
+
+    <div class="col-md-2">
+        <input class="form-control"
+               type="text"
+               name="telephone"
+               value="${(form.telephone)!}">
+    <@l.error for="telephone"/>
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="control-label col-md-5">${i18n("person.email")}</label>
+
+    <div class="col-md-2">
+        <input class="form-control" type="text" name="email" value="${(form.email)!}">
+    <@l.error for="email"/>
+    </div>
+</div>
+
+<div class="form-group text-center">
+    <button class="btn btn-primary" type="submit">${i18n("OK")}</button>
+    <a class="btn btn-default" href="/persons">${i18n("cancel")}</a>
+</div>

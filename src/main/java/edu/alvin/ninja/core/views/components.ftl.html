@@ -1,0 +1,13 @@
+<#macro genderSelect selectGender="M" attr...>
+    <#assign genders = {"M": i18n("male"), "F": i18n("female")}>
+    <select
+        <#if attr?has_content>
+            <#list attr?keys as key>
+                ${key}=${attr[key]}
+            </#list>
+        </#if>>
+        <#list genders?keys as key>
+            <option value="${key}" ${(key==selectGender)?string("selected", "")}>${genders[key]}</option>
+        </#list>
+    </select>
+</#macro>

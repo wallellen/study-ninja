@@ -1,0 +1,34 @@
+<#import "/edu/alvin/ninja/core/views/layout.ftl.html" as l>
+<#import "/edu/alvin/ninja/core/views/components.ftl.html" as c>
+
+<#assign header>
+<link rel="stylesheet" type="text/css" href="${asset.css('vendors/bootstrap-datetimepicker.min.css')}">
+<script type="text/javascript" src="${asset.js('vendors/bootstrap-datetimepicker.min.js')}"></script>
+</#assign>
+
+<#assign footer>
+<script type="text/javascript" src="${asset.js('person/person.js')}"></script>
+</#assign>
+
+<@l.layout title='${i18n("person.title.new")}' head=header footer=footer>
+<div class="content-panel">
+    <div class="row">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                ${i18n("person.title.new")}
+                </h4>
+            </div>
+            <div class="panel-body nopadding">
+                <form id="form-main" class="form-horizontal form-bordered" method="post"
+                      action="/persons" role="form" data-fv-enabled="true"
+                      data-fv-icon-valid="glyphicon glyphicon-ok"
+                      data-fv-icon-invalid="glyphicon glyphicon-remove"
+                      data-fv-icon-validating="glyphicon glyphicon-refresh">
+                    <#include "form.ftl.html">
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</@l.layout>

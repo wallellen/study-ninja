@@ -1,0 +1,110 @@
+import org.akhikhl.gretty.GrettyPlugin
+
+apply plugin: 'java'
+apply plugin: 'war'
+apply plugin: 'idea'
+apply plugin: 'war'
+apply plugin: "jacoco"
+apply plugin: GrettyPlugin
+
+sourceCompatibility = '1.8'
+targetCompatibility = '1.8'
+
+ext.buildNumber = 1
+ext.version = "0.0.${buildNumber}"
+
+buildscript {
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        classpath "org.akhikhl.gretty:gretty:latest.release"
+    }
+}
+
+gretty {
+    servletContainer = 'jetty9'
+    contextPath = ''
+    scanInterval = 1
+    systemProperty 'ninja.mode', 'dev'
+}
+
+idea {
+    project {
+        jdkName = '1.8'
+        languageLevel = '1.8'
+    }
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+sourceSets {
+    main {
+        output.resourcesDir = output.classesDir
+    }
+}
+
+repositories {
+    jcenter()
+    mavenCentral()
+}
+
+dependencies {
+    compile 'org.ninjaframework:ninja-core:latest.release',
+            'org.ninjaframework:ninja-servlet:latest.release',
+            'javax.servlet:javax.servlet-api:latest.release',
+            'commons-beanutils:commons-beanutils:latest.release',
+            'org.eclipse.jetty:jetty-servlets:latest.release',
+            'org.apache.derby:derbyclient:latest.release'
+    testCompile 'junit:junit:latest.release',
+            'org.hamcrest:hamcrest-all:latest.release',
+            'org.mockito:mockito-all:latest.release',
+            'org.ninjaframework:ninja-test-utilities:latest.release',
+            'com.github.kevinsawicki:http-request:latest.release',
+            'org.fluentlenium:fluentlenium-core:latest.release',
+            'org.unitils:unitils-core:latest.release'
+}
+
+task copyResources << {
+    copy {
+        from 'src/main/java'
+        include 'assets/'
+        include '**/*.ftl.html'
+        into sourceSets.main.output.classesDir
+    }
+    copy {
+        from 'src/test/java'
+        include '**/*.json'
+        include '**/*.xml'
+        into sourceSets.test.output.classesDir
+    }
+}
+
+test {
+    useJUnit {
+        excludeCategories("edu.alvin.ninja.core.acceptance.AcceptanceTest")
+    }
+}
+
+test.dependsOn copyResources
+war.dependsOn copyResources
+
+task jacocoTest(type: Test, dependsOn: [copyResources]) {
+    useJUnit {
+        includeCategories("edu.alvin.ninja.core.acceptance.AcceptanceTest")
+    }
+    reports.html.destination = "${buildDir}/reports/acceptanceTest"
+    jacoco {
+        append = true
+        destinationFile = file("${buildDir}/jacoco/test.exec")
+    }
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled true
+    }
+}

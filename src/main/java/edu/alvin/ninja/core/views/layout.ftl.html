@@ -1,0 +1,159 @@
+<#macro layout title="" head="" footer="">
+<!DOCTYPE html>
+<html>
+<head lang="zh">
+    <title>${(title!"")?html}</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" type="text/css" href="${asset.css('vendors/bootstrap.min.css')}">
+    <link rel="stylesheet" type="text/css" href="${asset.css('vendors/animate.css')}">
+    <link rel="stylesheet" type="text/css" href="${asset.css('vendors/bootstrap-override.css')}">
+    <link rel="stylesheet" type="text/css" href="${asset.css('vendors/form-validation.min.css')}">
+    <link rel="stylesheet" type="text/css" href="${asset.css('vendors/style.default.css')}">
+    <link rel="stylesheet" type="text/css" href="${asset.css('commons/bootstrap-override.css')}">
+    <link rel="stylesheet" type="text/css" href="${asset.css('commons/common.css')}">
+
+    <script type="text/javascript" src="${asset.js('vendors/jquery.min.js')}"></script>
+    <script type="text/javascript" src="${asset.js('vendors/jquery.mask.min.js')}"></script>
+    <script type="text/javascript" src="${asset.js('vendors/bootstrap.min.js')}"></script>
+    <script type="text/javascript" src="${asset.js('vendors/form-validation.min.js')}"></script>
+    <script type="text/javascript" src="${asset.js('vendors/form-validation-bootstrap.min.js')}"></script>
+    <script type="text/javascript" src="${asset.js('vendors/moment.min.js')}"></script>
+    <script type="text/javascript" src="${asset.js('vendors/bootstrap-growl.min.js')}"></script>
+    <script type="text/javascript" src="${asset.js('commons/common.js')}"></script>
+
+    <script type="text/javascript" src="${asset.js('vendors/lang/form-validation-default.js')}"></script>
+    <script type="text/javascript" src="${asset.js('vendors/lang/moment-default.js')}"></script>
+
+    <#noescape>
+    ${head}
+    </#noescape>
+
+    <script type="text/javascript">
+        defaultDatePickerOptions = {
+            format: "LL",
+            showTodayButton: true
+        };
+    </script>
+</head>
+<body>
+<div class="container-fluid">
+    <#noescape>
+    <#nested>
+    </#noescape>
+</div>
+<script type="text/javascript">
+    $(function () {
+        (function (forms) {
+            forms.find('*[data-server-fv-for]').each(function () {
+                $(this).closest('.form-group').addClass('has-error');
+            });
+            forms.on('status.field.fv', function (e, data) {
+                data.element
+                        .data('fv.messages')
+                        .find('.help-block[data-server-fv-for="' + data.field + '"]')
+                        .hide();
+            }).formValidation({
+                framework: 'bootstrap',
+                live: 'enabled',
+                message: 'This value is not valid'
+            });
+        })($('form[data-fv-enabled="true"]'));
+    });
+</script>
+    <#noescape>
+    ${footer}
+    </#noescape>
+
+    <#if flash.success??>
+    <script type="text/javascript">
+        $(function () {
+            $.growl({
+                        message: '<div style="padding:0 30px">${flash.success}</div>'
+                    }, {
+                        type: 'success',
+                        spacing: 30
+                    }
+            );
+        });
+    </script>
+    <#elseif flash.error??>
+    <script type="text/javascript">
+        $(function () {
+            $.growl({
+                        message: '<div style="padding:0 30px">${flash.error}</div>'
+                    }, {
+                        type: 'danger',
+                        spacing: 30
+                    }
+            );
+        });
+    </script>
+    </#if>
+</body>
+</html>
+</#macro>
+
+<#macro error for>
+    <@validationError for=for>
+        <#if message??>
+        <small class="help-block" data-server-fv-for="${for}">${message}</small>
+        </#if>
+    </@validationError>
+</#macro>
+
+
+<#macro deleteModal id="default-delete-modal" url="" text="" title=i18n("deleteConfirm")>
+<div class="modal fade" id="${id}" tabindex="-1" role="dialog" aria-labelledby="aria-modal-label" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header text-left">
+                <button type="button" class="close" data-dismiss="modal">
+                    <span aria-hidden="true"></span>
+                    <span class="sr-only">Close</span>
+                </button>
+                <h4 class="modal-title" id="aria-modal-label">${title}</h4>
+            </div>
+            <div class="modal-body">
+                <h5>&nbsp;</h5>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">${i18n('cancel')}</button>
+                <button type="button" class="btn btn-primary btn-delete-confirm">${i18n('OK')}</button>
+            </div>
+        </div>
+    </div>
+</div>
+    <#if url?has_content>
+    <script type="text/javascript">
+        $(function () {
+            $('#${id}').on('show.bs.modal', function (e) {
+                var target = $(e.relatedTarget);
+                var $this = $(this);
+                $this.find('.modal-body>h5').text(target.data('text') || '');
+                $this.find('.btn-delete-confirm').on('click', function () {
+                    var $methodInput = $('<input/>')
+                            .attr({
+                                'type': 'hidden',
+                                'name': '_method',
+                                'value': 'delete'
+                            });
+                    var $nextUrlInput = $('<input/>')
+                            .attr({
+                                'type': 'hidden',
+                                'name': '_nextUrl',
+                                'value': document.URL
+                            });
+                    $('<form/>').attr({
+                        'action': '${url}/' + target.data('id') + "/delete",
+                        'method': 'post'
+                    }).append($methodInput)
+                            .append($nextUrlInput).appendTo($('body'))
+                            .submit();
+                })
+            });
+        });
+    </script>
+    </#if>
+</#macro>

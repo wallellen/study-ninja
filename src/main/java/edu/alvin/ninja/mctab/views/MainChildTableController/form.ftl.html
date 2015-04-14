@@ -1,0 +1,35 @@
+<#-- @ftlvariable name="main" type="edu.alvin.ninja.mctab.controllers.MainForm" -->
+<#import "/edu/alvin/ninja/core/views/layout.ftl.html" as l>
+<
+<#assign footer>
+    <@l.deleteModal url="/main-child-tables" />
+<script type="text/javascript">
+</script>
+
+<script type="text/html" id="child-template">
+    <tr>
+        <td><input type="text" name="children.[n].name"></td>
+        <td><input type="text" name="children.[n].value"></td>
+        <td>
+            <a href="#">${i18n("delete")}</a>
+        </td>
+    </tr>
+</script>
+</#assign>
+
+<@l.layout title='${i18n("mctable.title.new")}' footer=footer>
+<div class="content-panel">
+    <div class="row">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                ${i18n("mctable.title.new")}
+                </h4>
+            </div>
+            <div class="panel-body">
+
+            </div>
+        </div>
+    </div>
+</div>
+</@l.layout>

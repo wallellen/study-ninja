@@ -1,0 +1,73 @@
+<#import "/edu/alvin/ninja/core/views/layout.ftl.html" as l>
+
+<#assign footer>
+<script type="text/javascript">
+</script>
+</#assign>
+
+<@l.layout title='${i18n("async.title.setting")}' footer=footer>
+<div class="content-panel">
+    <div class="row">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                ${i18n("async.title.setting")}
+                </h4>
+            </div>
+            <div class="panel-body">
+                <form id="form-main" class="form-horizontal form-bordered" method="post"
+                      action="/async" role="form" data-fv-enabled="true"
+                      data-fv-icon-valid="glyphicon glyphicon-ok"
+                      data-fv-icon-invalid="glyphicon glyphicon-remove"
+                      data-fv-icon-validating="glyphicon glyphicon-refresh">
+                    <div class="form-group">
+                        <label class="control-label col-md-5">
+                        ${i18n("async.start")}
+                            <span class="asterisk">*</span>
+                        </label>
+
+                        <div class="col-md-2">
+                            <input type="text" class="form-control" name="step" value="${(form.step)!}"
+                                   data-fv-notempty="true"
+                                   data-fv-integer="true"/>
+                            <@l.error for="step"/>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-md-5">
+                        ${i18n("async.max")}
+                            <span class="asterisk">*</span>
+                        </label>
+
+                        <div class="col-md-2">
+                            <input type="text" name="maximum" class="form-control" value="${(form.maximum)!}"
+                                   data-fv-notempty="true"
+                                   data-fv-integer="true"/>
+                            <@l.error for="maximum"/>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="control-label col-md-5">
+                        ${i18n("async.speed")}
+                            <span class="asterisk">*</span>
+                        </label>
+
+                        <div class="col-md-2">
+                            <input type="text" name="speed" class="form-control" value="${(form.speed)!}"
+                                   data-fv-notempty="true"
+                                   data-fv-integer="true"/>
+                            <@l.error for="speed"/>
+                        </div>
+                    </div>
+                    <div class="form-group text-center">
+                        <button class="btn btn-primary" type="submit">${i18n("OK")}</button>
+                        <a class="btn btn-default" href="/async">${i18n("cancel")}</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+</@l.layout>

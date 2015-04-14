@@ -1,0 +1,50 @@
+<#import "/edu/alvin/ninja/core/views/layout.ftl.html" as l>
+
+<#assign footer>
+<script type="text/javascript">
+    var timer = setInterval(function () {
+        $.get('/async/' + ${async.id} +'/json', function (data) {
+            if (data.step <= data.maximum) {
+                var percent = (data.step / data.maximum) * 100;
+                $('.progress-bar').css('width', percent + '%')
+                        .text(percent.toFixed(0) + '%');
+            } else {
+                clearInterval(timer);
+            }
+        });
+    }, 500);
+</script>
+</#assign>
+
+<@l.layout title='${i18n("async.title.process")}' footer=footer>
+<div class="content-panel">
+    <div class="row">
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h4 class="panel-title">
+                ${i18n("async.title.process")}
+                </h4>
+            </div>
+            <div class="panel-body">
+                <#if async??>
+                    <div class="details clearfix">
+                        <div>${i18n("async.id")}: ${async.id}</div>
+                        <div>${i18n("async.max")}: ${async.maximum}</div>
+                        <div>${i18n("async.speed")}: ${async.speed}</div>
+                    </div>
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-striped" role="progressbar"
+                             style="width: ${async.step?float / async.maximum?float * 100}%;">
+                        ${(async.step?float / async.maximum?float * 100)?int}%
+                        </div>
+                    </div>
+                <#else>
+                    <div class="col-md-12">
+                    ${i18n("async.process.notexist")}
+                    </div>
+                </#if>
+            </div>
+        </div>
+    </div>
+</div>
+</@l.layout>
